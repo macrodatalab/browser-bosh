@@ -853,7 +853,7 @@ var conn={
       opts:"",
       original:"",
       cmdAPI:"/cmd",
-      target:"http://127.0.0.1:9090"
+      target:"{{if .TLS}}https{{else}}http{{end}}://{{.Host}}"
 }
 
 
