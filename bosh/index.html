@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+
+<head>
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.js"></script>
+<script src="papaparse.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<link href="https://cdn.rawgit.com/masayuki0812/c3/master/c3.min.css" rel="stylesheet" type="text/css">
+<script src="http://cdn.rawgit.com/masayuki0812/c3/master/c3.js"></script>
+<link rel="stylesheet" media="screen" href="handsontable.full.css">
+<script src="handsontable.full.js"></script>
+<script src="BigObject.js"></script>
+<script src="jquery.jsonview.js"></script>
+<script src="url.min.js"></script>
+<link rel="stylesheet" media="screen" href="jquery.jsonview.css">
+<script type="text/javascript" src="js/plupload.full.min.js"></script>
+<script src="BigObjectCloud.js"></script>
+<script src="d3.layout.cloud.js"></script>
+<script src="correlation_tree_plugin.js"></script>
+<script src="underscore-min.js"></script>
+<script src="vtortola.ng-terminal.js"></script>
+<script src="bosh.command.js"></script>
+<script src="example.command.tools.js"></script>
+<script src="bosh_angular.js"></script>
+<link href="vtortola.ng-terminal.css" rel="stylesheet" />
+ 
+
+
+
+
+</head>
+<style>
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #F0F0F0;
+  padding-top:1%;
+  font-family: Verdana, Helvetica, Arial, FreeSans, sans-serif;
+  color: #454545;
+  font-size: 14px;
+  min-width: 700px;
+  height: 100%;
+}
+
+#Bosh {
+  margin: 0;
+  background-color: #F0F0F0;
+  padding-top:1%;
+  font-family: Verdana, Helvetica, Arial, FreeSans, sans-serif;
+  color: #454545;
+  min-width: 700px;
+  height:100%;
+}
+
+#Doc {
+   height:100%;
+   width:100%;
+}
+
+#Report {
+   background-color: #F0F0F0;
+}
+
+.drawoption{
+       margin-top:2px;
+       margin-left:2px;
+}
+
+.disposible{
+       margin-top:2px;
+       margin-left:2px;
+}
+
+
+
+
+#circle circle {
+fill: none;
+pointer-events: all;
+}
+
+.group path {
+fill-opacity: .5;
+}
+
+path.chord {
+stroke: #777;
+stroke-width: 0.1px;
+}
+
+#circle:hover path.chordfade {
+display: none;
+}
+
+body,html,.row-offcanvas {
+  height:100%;
+}
+
+#output_panel{
+background-color:#FFF;
+border-style:inset;
+border-width:1px;
+margin-left:10px;
+}
+
+#sidebar {
+  width: inherit;
+  min-width: 500px;
+  max-width: 500px;
+  float: left;
+  height:95%;
+  position:relative;
+/*  overflow-y:auto;
+  overflow-x:hidden;*/
+}
+
+.ui-tabs.ui-widget-content {
+    border: none;
+}
+
+#main {
+  height:95%;
+  overflow:auto;
+  margin-left:5px;
+}
+
+/*
+ * off Canvas sidebar
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 768px) {
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all 0.25s ease-out;
+    -moz-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out;
+    width:calc(100% + 800px);
+  }
+    
+  .row-offcanvas-left
+  {
+    left: -220px;
+  }
+
+  .row-offcanvas-left.active {
+    left: 0;
+  }
+
+  .sidebar-offcanvas {
+    position: absolute;
+    top: 0;
+  }
+}
+
+</style>
+<script>
+
+$(document).ready(function(){
+
+ $( "#tabs" ).tabs({
+                  heigtStyle:"auto",
+                  create:function(event,ui){
+                          $("body").css({"overflow":"hidden"});
+                          $("body").css({"height":"100%"});
+                  },
+                  activate: function(event,ui){
+                            if(ui.newTab.index()==0){
+                                      $("body").css({"overflow":"hidden"});
+                                      $("body").css({"height":"90%"});
+                            }else{
+                                      $("body").css({"overflow":"visible"});
+                                      $("body").css({"height":"100%"});
+                            }
+                  }
+        });
+
+
+
+});
+</script>
+<body>
+<div id="tabs" style="height:100%;">
+<ul>
+<li><a href="#Doc">Documentations</a></li>
+<li><a href="#Bosh">BigObject shell</a></li>
+<li><a href="#Report">History</a></li>
+</ul>
+<iframe id="Doc" src="https://bigobject.readme.io/v1.0/docs" style="width:100%; height:100%"> </iframe>
+<div id="Bosh">
+<div class="row-offcanvas row-offcanvas-left">
+     <div id="sidebar" class="sidebar-offcanvas">
+          <div class="col-md-12" ng-app="ng-terminal-example">
+                <div ng-controller="console">
+                    <terminal >
+                    </terminal>
+                </div>
+
+
+          </div>
+     </div>
+     <div id="main">
+          <div class="col-md-9">
+               <div id="output_panel" style=" height:240px;"></div>
+               <div id="table_layout">
+                   <div id="C3graph" style="max-height:600px;"></div>
+                    <div id="D3chord" ></div>
+               </div>
+          </div>
+     </div>
+</div>
+</div>
+<div id="Report" style="overflow:auto;"></div>
+
+</div> <!-- tabs --!>
+
+
+
+
+
+</body>
+</html>
