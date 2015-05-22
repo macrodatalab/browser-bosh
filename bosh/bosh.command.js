@@ -115,6 +115,20 @@ angular.module('ng-terminal-bosh.command', ['ng-terminal-example.command.tools']
             }
        }
     });
+    commandBrokerProvider.appendCommandHandler({
+        command: 'use',
+        description: ['assign workspace'],
+        handle: function (session) {
+            var cmdStr = "create " + Array.prototype.slice.call(arguments, 1).join(' ');
+            try{
+                   cmdDict['execute'](session,cmdStr);
+            }catch(err){
+                   session.output.push({ output: true, text: [err.why||err.message], breakLine: true });
+                   return 
+            }
+             conn.workspace =  Array.prototype.slice.call(arguments, 2)[0];
+       }
+    });
 
 
     commandBrokerProvider.appendCommandHandler({
