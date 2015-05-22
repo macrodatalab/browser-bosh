@@ -102,6 +102,20 @@ angular.module('ng-terminal-bosh.command', ['ng-terminal-example.command.tools']
        }
     });
 
+    commandBrokerProvider.appendCommandHandler({
+        command: 'set',
+        description: ['set Date format in BigObject'],
+        handle: function (session) {
+            var cmdStr = "set " + Array.prototype.slice.call(arguments, 1).join(' ');
+            try{
+                   cmdDict['execute'](session,cmdStr);
+            }catch(err){
+                   session.output.push({ output: true, text: [err.why||err.message], breakLine: true });
+                   return 
+            }
+       }
+    });
+
 
     commandBrokerProvider.appendCommandHandler({
         command: 'update',
