@@ -418,7 +418,7 @@ var displayData = function(data,bindDiv){
 
 
 var scanData = function(scankey,index,localvar){
-                  var cmdJson =  { 'Stmt':'scan '+ [scankey,index, 1000].join(' ') , 'Workspace':"",'Opts':""  }; 
+                  var cmdJson = cmd2JSON('scan '+[scankey,index, 1000].join(' '));
                   $.post(conn.target+"/cmd",JSON.stringify(cmdJson),"json")
                         .done(function(data){
                                var data = JSON.parse(data[0]['Content']);
