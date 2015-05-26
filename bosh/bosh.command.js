@@ -645,40 +645,11 @@ var addTable2Report = function(container){
 
 var csvloader=function(session,tablename){
       var showData=function(csv){
-
-             var allLines=csv.split(/[\r\n]/);
              var lines=[];
-             var colnum=0;
-             for (var i=0;i<allLines.length-1;++i){
-/*
-                  var pattern="";
-//                  if(allLines[i].charAt(0)==="\""||allLines[i].charAt(0)==="\'"){
- //                            pattern=allLines[i].charAt(0);                                  
-  //                }
-                  var row=allLines[i].split(pattern+","+pattern);
-                  if(row.length===1){
-                      if(row[0]==="")continue;
-                  }
-                  var cols=[];
-                  for (var j=0;j<row.length;++j){
-                           cols.push(checktoken(row[j]));
-                  }
-*/
-                
-                 if(allLines[i].length===0)continue;
-   
-                  var cols = Papa.parse(allLines[i]).data[0];
-                  if (cols.length > colnum) {
-                          colnum = cols.length;
-                  }else if (cols.length <colnum){
-                          var extracols;
-                          do{
-                                  i=i+1;
-                                  extracols = Papa.parse(allLines[i]).data[0];
-                          }while(extracols === undefined)
-                          cols.push(extracols);
-                  }
-                  lines.push(cols);
+             var tmp  = Papa.parse(csv).data;
+             for (var i = 0 ;i < tmp.length;i++) {
+                   if(tmp[i]=="")continue;
+                   lines.push(tmp[i]);
              }
              derivedData=lines;
              displayData(derivedData,"#output_panel");
