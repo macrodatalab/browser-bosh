@@ -649,7 +649,11 @@ var csvloader=function(session,tablename){
              var tmp  = Papa.parse(csv).data;
              for (var i = 0 ;i < tmp.length;i++) {
                    if(tmp[i]=="")continue;
-                   lines.push(tmp[i]);
+                   var tmpline=[];
+                   for (var j = 0; j< tmp[i].length;j++){
+                         tmpline.push(checktoken(tmp[i][j]));
+                   }
+                   lines.push(tmpline);
              }
              derivedData=lines;
              displayData(derivedData,"#output_panel");
@@ -659,8 +663,9 @@ var csvloader=function(session,tablename){
      
      var checktoken=function(token){
               token=token.replace(/^["']|["']$/g,"");
-              token=token.replace(/[']/g,"%27");
-              token=token.replace(/[\\]/g,"%5C");
+              token=token.replace(/[']/g,"");
+              token=token.replace(/[\\]/g,"");
+              token=token.replace(/\r?\n|\r/g,"");
               return token
      }
 
