@@ -183,6 +183,13 @@ $(document).ready(function(){
                   }
         });
 
+        $(window).on('beforeunload', function(){
+                  return 'The history will not be saved.';
+        });
+        $(window).on('unload', function(){
+                  logout();
+        });
+
 
 
 });
