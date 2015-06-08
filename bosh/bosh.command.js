@@ -801,13 +801,6 @@ var DrawChart = function(){
                              $("#C3graph").boshBasic(derivedData,$("#chartType").val(),480);
                       }
 
-                      if($("#addchart").length==0){
-                           $("#table_layout").append($('<input type="button" id="addchart" class="drawoption btn btn-success" value="Add to history">'));
-                           var header=$('<input type="text" id="header" class="form-control">');
-                           header.attr("placeholder",dataCommand);
-                           $("#table_layout").append(header);
-                           $("#addchart").on("click",add2Report);
-                      }
                       $('#main').scrollTop($('#main')[0].scrollHeight);
 };
 
