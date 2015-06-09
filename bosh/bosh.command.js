@@ -47,6 +47,7 @@ angular.module('ng-terminal-bosh.command', ['ng-terminal-example.command.tools']
                     {
                               conn.target = conn.scheme + '://' + conn.host + ':' + conn.port + conn.path;
                     }
+                    window.bo.target = conn.target;
             }
             else
             {
@@ -853,6 +854,7 @@ var conn={
       target:"{{if .TLS}}https{{else}}http{{end}}://{{.Host}}"
 }
 
-
+window.bo={}
+window.bo.target=conn.target
 
 })(window);
