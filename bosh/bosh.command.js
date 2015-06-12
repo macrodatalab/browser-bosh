@@ -87,6 +87,20 @@ angular.module('ng-terminal-bosh.command', ['ng-terminal-example.command.tools']
         }
     });
 
+    commandBrokerProvider.appendCommandHandler({
+        command: 'apply',
+        description: ['Tree operation'],
+        handle: function (session) {
+            var cmdStr = "apply " + Array.prototype.slice.call(arguments, 1).join(' ');
+            try{
+                   cmdDict['execute'](session,cmdStr);
+            }catch(err){
+                   session.output.push({ output: true, text: [err.why||err.message], breakLine: true });
+                   return 
+            }
+       }
+    });
+
 
 
     commandBrokerProvider.appendCommandHandler({
@@ -368,12 +382,6 @@ angular.module('ng-terminal-bosh.command', ['ng-terminal-example.command.tools']
 }])
 ;
 
-var setClient=function(){
-        var transport= new Thrift.Transport(conn.target);
-        var protocol = new Thrift.Protocol(transport);
-        var client = new BigObjectServiceClient(protocol);
-        return client
-};
 
 
 var print2Term = function(session,text){
@@ -416,7 +424,6 @@ var cleanCsvInput=function(){
 var displayData = function(data,bindDiv){
 	cleanDisplay();
         cleanCsvInput();
-        console.log(localvarspace);
 	$(bindDiv).append('<div id="htable" style="overflow:auto;height:240px"></div>');
 	$("#htable").handsontable({
 		data: data,
@@ -430,13 +437,12 @@ var displayData = function(data,bindDiv){
         cleanDraw();
         isDrawable();
 };
-
-
+/* previous API
 var scanData = function(scankey,index,localvar){
                   var cmdJson = cmd2JSON('scan '+[scankey,index, 1000].join(' '));
                   $.post(conn.target+"/cmd",JSON.stringify(cmdJson),"json")
                         .done(function(data){
-                               var data = JSON.parse(data[0]['Content']);
+                               var data = data['Content'];
                                if(data.index!=-1){
                                    appendData(data.content);
                                    scanData(scankey,data.index,localvar);
@@ -449,7 +455,30 @@ var scanData = function(scankey,index,localvar){
                                }
                          });
 }
+*/
 
+var scanData = function(scankey,index,localvar){
+
+request.post({
+        url: conn.target+"/cmd",
+        json: true,
+        body: {
+            Stmt: 'SCAN ' + [scankey,index].join(' '),
+            Workspace: '',
+            Opts: ''
+        }
+    })
+    .pipe(JSONstream.parse())
+    .pipe(es.mapSync(function(data) {
+        appendData(data.Content.content);
+        if(localvar)localvarspace[localvar]=derivedData.slice();
+        displayData(derivedData,"#output_panel"); 
+        isLoading=false;
+    }));
+
+
+
+}
 
 var evalVar=function(cmdStr){
       var varlist=cmdStr.match(/\$(\w+)/g);
@@ -499,7 +528,6 @@ var getColumn=function(index,array){
 
 var loadData = function (session,cmdStr ){
         cmdStr = checkCmd(cmdStr); 
-        console.log(cmdStr);
        var cmdJson = cmd2JSON(cmdStr);
         if(isLoading){
               print2Term(session,["Already a loading data task, please wait "]);
@@ -508,8 +536,8 @@ var loadData = function (session,cmdStr ){
         isLoading=true;
         $.post(conn.target + conn.cmdAPI,JSON.stringify(cmdJson),"json")
         .done(function(data){
-                if(data[0]['Status']>=0){
-                      var scankey = JSON.parse(data[0]['Content']);
+                if(data['Err']==""){
+                      var scankey = data['Content']['res'];
                       if (scankey.length!=undefined){
                               derivedData.length=0;
                               var localvar = session.localvar;
@@ -520,7 +548,7 @@ var loadData = function (session,cmdStr ){
                               isLoading=false;
                       }
                 }else{
-                      print2Term(session,[data[0]['Err']]);
+                      print2Term(session,[data['Err']]);
                       isLoading = false;
                 }
         })
@@ -534,8 +562,8 @@ var displayInfo = function(session,cmdStr){
         var cmdJson = cmd2JSON(cmdStr); 
         $.post(conn.target+conn.cmdAPI,JSON.stringify(cmdJson),"json")
         .done(function(data){
-             if(data[0]['Status']>=0){
-                    var info = data[0]['Content'];
+             if(data['Err']==""){
+                    var info = data['Content'];
                     var bindDiv = $('#output_panel'); 
                     cleanDisplay();
                     cleanCsvInput();
@@ -543,7 +571,7 @@ var displayInfo = function(session,cmdStr){
                     $("#htable").JSONView(info);
                     $("#htable").JSONView('toggle');
               }else{
-                    print2Term(session,[data[0]['Err']]);
+                    print2Term(session,[data['Err']]);
               }
               cleanDraw();
               cleanDrawOptions();
@@ -559,7 +587,7 @@ var executeStatus=function(session,cmdStr){
         var cmdJson = cmd2JSON(cmdStr);
         $.post(conn.target + conn.cmdAPI,JSON.stringify(cmdJson),"json")
         .done(function(data){
-                 var Msg = data[0]['Status']>=0 ? ["Success"] : [data[0]['Err']];
+                 var Msg = data['Err']=="" ? ["Success"] : [data['Err']];
                  print2Term(session,Msg);
         })
         .fail(function(xhr, textStatus, errorThrown){
