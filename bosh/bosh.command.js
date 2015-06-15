@@ -469,9 +469,11 @@ request.post({
     .pipe(JSONstream.parse())
     .pipe(es.mapSync(function(data) {
         appendData(data.Content.content);
-        if(localvar)localvarspace[localvar]=derivedData.slice();
-        displayData(derivedData,"#output_panel"); 
-        isLoading=false;
+        if (data.Content.index = -1) {
+            if(localvar)localvarspace[localvar]=derivedData.slice();
+      	    displayData(derivedData,"#output_panel"); 
+            isLoading=false;
+        }
     }));
 
 
