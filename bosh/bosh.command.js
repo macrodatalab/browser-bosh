@@ -463,9 +463,7 @@ request.post({
         url: conn.target+"/cmd",
         json: true,
         body: {
-            Stmt: 'SCAN ' + [scankey,index].join(' '),
-            Workspace: '',
-            Opts: ''
+            Stmt: 'SCAN ' + [scankey,index].join(' ')
         }
     })
     .pipe(JSONstream.parse())
@@ -876,7 +874,7 @@ var conn={
       token:"",
       path:"",
       workspace:"",
-      opts:"",
+      opts: {Handle: true},
       original:"",
       cmdAPI:"/cmd",
       target:"{{if .TLS}}https{{else}}http{{end}}://{{.Host}}"
