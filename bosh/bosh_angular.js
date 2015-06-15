@@ -84,7 +84,7 @@ angular.module('ng-terminal-example', ['vtortola.ng-terminal', 'ng-terminal-exam
                  });
                  var upload=$("#uploader").pluploadQueue();
                  upload.bind('Error',function(up,e){
-                             console.log(e);
+                             alert(e.response);
                  });
                 
                  upload.bind('FileUploaded',function(up,file,info){
