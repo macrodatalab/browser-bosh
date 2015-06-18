@@ -106,6 +106,7 @@ var getBourl = function(){
 };
 var attrtypes=['STRING','INT','INT32','FLOAT','VARSTRING','DATETIME32'];
 var schemaAPP = angular.module('schemaAPP', []);
+
 schemaAPP.controller('schemaCtrl', function($scope){
            $scope.table={};
            var callback_url;
@@ -120,6 +121,24 @@ schemaAPP.controller('schemaCtrl', function($scope){
                       });   
            };
 
+           var checkstatus = function(url){
+                      $.ajax({
+                          url: url,
+                          type: 'GET',
+                          contentType: 'application/json',
+                          success: function(result) {
+                                  if(result=="done"){
+                                       $.unblockUI();
+                                       $scope.schema=false;
+                                       $scope.$apply()
+                                  }else{
+                                          setTimeout(checkstatus(url),3000);
+                                  }
+                          }
+                      }); 
+
+           };
+
            $scope.putschema = function(option){
                       var target = getBourl();
                       $.ajax({
@@ -128,11 +147,17 @@ schemaAPP.controller('schemaCtrl', function($scope){
                           contentType: 'application/json',
                           data: JSON.stringify($scope.table),
                           success: function(result) {
-                                  $scope.schema=false;
-                                  $scope.$apply()
+                                  //$scope.schema=false;
+                                  //$scope.$apply();
+                                  $.blockUI({ message: '<h1>Create Table</h1>' }); 
+                                  newurl=callback_url.replace("import","import\/status");
+                                  console.log(newurl);
+                                  checkstatus(newurl);
                           }
                       }); 
            };
+
+          
 
 });
 schemaAPP.controller('repeatCtrl',function($scope){
