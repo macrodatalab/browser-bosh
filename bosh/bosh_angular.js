@@ -104,7 +104,7 @@ angular.module('ng-terminal-example', ['vtortola.ng-terminal', 'ng-terminal-exam
 var getBourl = function(){
       return window.bo.target;
 };
-var attrtypes=['STRING','INT','INT32','FLOAT','VARSTRING','DATETIME32'];
+var attrtypes=['STRING','INT','INT32','FLOAT','VARSTRING','DATETIME32','DOUBLE'];
 var schemaAPP = angular.module('schemaAPP', []);
 
 schemaAPP.controller('schemaCtrl', function($scope){
