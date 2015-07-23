@@ -12,7 +12,6 @@
 <link rel="stylesheet" href="jquery-ui.css">
 <script src="jquery-ui.js"></script>
 <script src="blockui.js"></script>
-<script src="angular.js"></script>
 <script src="bosh.js"></script>
 <script src="papaparse.js"></script>
 <script src="d3.min.js"></script>
@@ -31,7 +30,6 @@
 <script src="d3.layout.cloud.js"></script>
 <script src="correlation_tree_plugin.js"></script>
 <script src="underscore-min.js"></script>
-<script src="bosh_angular.js"></script>
 <script type="text/javascript" src="plupload.full.min.js"></script>
 <script type="text/javascript" src="bosh.jquery.plupload.queue.js"></script>
 <link rel="stylesheet" media="screen" href="bosh.jquery.plupload.queue.css">
@@ -46,26 +44,6 @@ html {
   height: 100%;
 }
 
-body {
-  margin: 0;
-  background-color: #F0F0F0;
-  padding-top:1%;
-  font-family: Verdana, Helvetica, Arial, FreeSans, sans-serif;
-  color: #454545;
-  font-size: 14px;
-  min-width: 700px;
-  height: 100%;
-}
-
-#Bosh {
-  margin: 0;
-  background-color: #F0F0F0;
-  padding-top:1%;
-  font-family: Verdana, Helvetica, Arial, FreeSans, sans-serif;
-  color: #454545;
-  min-width: 700px;
-  height:100%;
-}
 
 #Doc {
    height:100%;
@@ -111,12 +89,6 @@ body,html,.row-offcanvas {
   height:100%;
 }
 
-#output_panel{
-background-color:#FFF;
-border-style:inset;
-border-width:1px;
-margin-left:10px;
-}
 
 #sidebar {
   width: inherit;
@@ -166,9 +138,15 @@ margin-left:10px;
     top: 0;
   }
 }
-
 </style>
 <script>
+$(document).keypress(function(e){
+    if (e.which == 13){
+           bosh.cmdParser();
+    }
+    if (e.keyCode != 13) return;
+    return false;
+});
 
 $(document).ready(function(){
 
@@ -198,60 +176,24 @@ $(document).ready(function(){
 
 
 
+
 });
+
 </script>
 <body>
-<div id="tabs" style="height:100%;">
+<textarea rows="2"  style="width:100%;" id="command" > </textarea>
+<div id="tabs" >
 <ul>
-<li><a href="#Doc">Documentation</a></li>
-<li><a href="#Bosh">BigObject shell</a></li>
-<li><a href="#Uploader">Upload data</a></li>
-<li><a href="#License">License</a></li>
+<li><a href="#output">OUTPUT</a></li>
+<li><a href="#chart">CHART</a></li>
 </ul>
-<iframe id="Doc" src="docs.html" style="width:100%; height:100%"> </iframe>
-<iframe id="Bosh" src="poc.html" style="width:100%; height:100%"> </iframe>
-
-<iframe id="License" src="license.html" style="width:100%; height:100%"> </iframe>
-
-<div id="Uploader"  ng-controller="schemaCtrl">
-<div id="uploader"></div>
-<div ng-hide="schema">
-<input type="button" id="startUpload" class="btn btn-info" ng-click = "getUPURL()" value="Create new upload session">
+<div id="output">
+<div id="output_panel"></div>
 </div>
-<div ng-show="schema">
-<div class="row">
-<div class="col-md-1 col-md-offset-1"><input type="text" class="form-control" value="Table Name" readonly="true"></div>
-<div class="col-md-2"><input type="text" class="form-control" ng-model="table.name" ng-trim="false"></div>
+<div id="chart">
+<div id="D3chord"></div>
+<div id="C3graph"></div>
+<div id="table_layout"></div>
 </div>
-
-<div ng-repeat="column in table.columns" ng-controller="repeatCtrl">
-
-<div class="row">
-<div class="col-md-1 col-md-offset-1"><input type="text" class="form-control" value="Colname" readonly="true"></div>
-<div class="col-md-2"><input type="text" class="form-control" ng-model="column.attr" ng-trim="false"></div>
-<div class="col-md-1"><input type="text" class="form-control" value="Type" readonly="true"></div>
-<div class='col-md-2'><select ng-model="column.type" class="form-control" ng-options="type for type  in attrtypes"></select></div>
-<div class='col-md-2'><input ng-if="column.datefmt" type="text" class="form-control" ng-model="column.datefmt"></div>
-</div>
-
-
-</div>
-
-<div class="row">
-<div class="col-md-1 col-md-offset-1"><input type="button"  class="btn btn-danger" ng-click = "putschema('create')" value="create table"></div>
-<div class="col-md-1"><input type="button"  class="btn btn-danger" ng-click = "putschema('append')" value="append to table"></div>
-</div>
-</div>
-
-</div>
-
-
-</div> <!-- tabs --!>
-<script>
-angular.bootstrap(document.getElementById("Uploader"),['schemaAPP']);
-</script>
-
-
-
 </body>
 </html>
