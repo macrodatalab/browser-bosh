@@ -4,9 +4,8 @@
  var getschema = function(url,$scope){
                   $.get(url)
                   .done(function(data){
-                            $scope.table = JSON.parse(data);
+                            $scope.table = data;
                             $scope.schema = true;
-                            console.log($scope.table);
                             $scope.$watch('table.name', function() {
                                    $scope.table.name = $scope.table.name.replace(/\s+/g,'');
                             });
