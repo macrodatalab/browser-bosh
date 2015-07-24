@@ -200,6 +200,9 @@ var displayInfo = function(cmdStr){
               cleanDisplay();
               if(data['Err']==""){
                     var info = data['Content'];
+                    if(info==null){
+                          info = {'Status':'Ok'};
+                    }
                     var bindDiv = $('#output_panel'); 
                     bindDiv.append('<div id="htable" ></div>');
                     $("#htable").JSONView(info);
