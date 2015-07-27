@@ -222,10 +222,17 @@ var displayInfo = function(cmdStr){
 var cmdParser=function(){
        var cmdArea=$('#command');
        var cmd=cmdArea.val();
+       var parsed = cmd.split(" ").filter(function(item){return item!=""&&item!="\n"&&item!="\r\n"});
        var type=cmd.split(" ").filter(function(item){return item!=""&&item!="\n"&&item!="\r\n"}).shift().toLowerCase();
        var cmdclass = {"select":"load","find":"load","get":"load"};
        if(type in cmdclass){
              loadData(cmd);         
+       }else if(type == "bourl"){
+             cleanDisplay();
+             if(parsed.length!=1){
+                    conn.target=parsed[1];
+             } 
+             $("#output_panel").html(conn.target);                    
        }else{
              displayInfo(cmd);             
        }

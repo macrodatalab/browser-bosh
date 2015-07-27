@@ -102,7 +102,7 @@ schemaAPP.controller('schemaCtrl', function($scope){
                                   $.blockUI({ message: '<h3>Processing data. Do not close the page</h3>' }); 
                                   newurl=callback_url.replace("import","import\/status");
                                   console.log(newurl);
-                                  checkstatus(newurl);
+                                  checkstatus(target+newurl);
                           }
                       }); 
            };
