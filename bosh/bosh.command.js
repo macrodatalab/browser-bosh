@@ -224,7 +224,7 @@ var cmdParser=function(){
        var cmd=cmdArea.val();
        var parsed = cmd.split(" ").filter(function(item){return item!=""&&item!="\n"&&item!="\r\n"});
        var type=cmd.split(" ").filter(function(item){return item!=""&&item!="\n"&&item!="\r\n"}).shift().toLowerCase();
-       var cmdclass = {"select":"load","find":"load","get":"load"};
+       var cmdclass = {"select":"load","find":"load","get":"load","apply":"load"};
        if(type in cmdclass){
              loadData(cmd);         
        }else if(type == "bourl"){
